@@ -1,4 +1,6 @@
 import random
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 # tar emot vilket scenario som sker och slumpar en tid för detta inom tidsintervallet för det scenariot 
@@ -6,7 +8,7 @@ def get_time(scenario):
     time_intervals = [[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8]]
 
     if scenario >= len(time_intervals):
-        return None
+        return -1
 
     result = random.randint(time_intervals[scenario][0], time_intervals[scenario][1])
     return result
@@ -111,7 +113,6 @@ def yttre_faktorer(alkohol, stress, trötthet, erfarenhet):
 if __name__ == "__main__":
 
     
-   ## print(the_cars([True, 5, 6, 8], [False, 6, 2, 3]))
     result = {}
     for i in range(10000):
         n = get_time(get_scenario([ 5, 6, 3], [3, 5, 7]))
@@ -119,5 +120,20 @@ if __name__ == "__main__":
             result[n] += 1
         except KeyError:
             result[n] = 1
+            
+# Börjat labba med att visa resultatet i en graf
+    x = list(sorted(result.keys()))
+    y = []
+
+    for k in sorted(result.keys()):
+        y.append(result[k])
+
+    fig, ax = plt.subplots()
+    ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
+
 
     print(result)
+    plt.show()
+
+
+   
