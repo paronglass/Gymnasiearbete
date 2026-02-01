@@ -2,6 +2,20 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 
+base_prob_scen = {1:5, 2:3, 3:6, 4:7, 5:4, 6:8, 7:9, 8:10}
+#fundera på om aggresivitet ska ha -1 för låg för att göra det lättare senare när du testar om förarens värde är stort eller litet
+# listan för högre chans skrivs såhär (högt/lågt, vilken egenskap som gäller, vilken förare som gäller)
+higher_prob = {
+1:[[1, 1, 1], [1, 2, 1]],
+2:[[1, 1, 1], [1, 2, 1], [1, 2, 2]],
+3:[[1, 1, 1], [-1, 2, 1], [1, 2, 2]],
+4:[[-1, 1, 1], [-1, 2, 1]],
+5:[[-1, 1, 1], [-1, 2, 1], [1, 2, 2]],
+6:[[-1, 1, 1], [-1, 2, 1], [1, 2, 2]],
+7:[[-1, 1, 1], [-1, 2, 1], [1, 1, 2], [1, 0, 2]],
+8:[[-1, 1, 1], [-1, 2, 1], [-1, 1, 2], [-1, 0, 2]]             
+               }
+
 
 # tar emot vilket scenario som sker och slumpar en tid för detta inom tidsintervallet för det scenariot 
 def get_time(scenario):
@@ -29,7 +43,29 @@ def get_scenario(driver1, driver2):
     return result
 
 def get_prob_scen(scenario, driver1, driver2):
-    return 10
+    result = base_prob_scen[scenario]
+    #tar ut listorna för det som påverkas för varje scenario
+    filters = higher_prob[scenario]
+
+#loopar varje sak som påverkar och kollar värdena i listan, två variabler sätts (egenskaper och vilken förare det gäller)
+#beroende på dessa variabler testar funktionen om föraren har till exempel hög aggresivitet om det är detta som påverkar
+#om föraren har det som påverkar ska sannolikheten (result) ökas
+    for filt in filters:
+        egenskap = filt[1]
+        if filt[2] == 1:
+            driver = driver1
+        else: 
+            driver = driver2
+        
+        if filt[0] == -1:
+            if driver[egenskap] < 3:
+                result += 2
+        
+        if filt[0] == 1: 
+            if driver[egenskap] > 7:
+                result += 2
+
+    return result
 
 def the_cars(driver1, driver2):
     driver1 = yttre_faktorer(*driver1)
@@ -113,27 +149,30 @@ def yttre_faktorer(alkohol, stress, trötthet, erfarenhet):
 if __name__ == "__main__":
 
     
-    result = {}
-    for i in range(10000):
-        n = get_time(get_scenario([ 5, 6, 3], [3, 5, 7]))
-        try:
-            result[n] += 1
-        except KeyError:
-            result[n] = 1
+    #result = {}
+    #for i in range(10000):
+        #n = get_time(get_scenario([ 5, 6, 3], [3, 5, 7]))
+        #try:
+        #   result[n] += 1
+        #except KeyError:
+         #   result[n] = 1
+         
+    #försökte testa om funktionen fungerade men fick inte riktigt till det
+    print(get_prob_scen(1, [8,8,5], [5,5,5]))
             
 # Börjat labba med att visa resultatet i en graf
-    x = list(sorted(result.keys()))
-    y = []
+    #x = list(sorted(result.keys()))
+    #y = []
 
-    for k in sorted(result.keys()):
-        y.append(result[k])
+    #for k in sorted(result.keys()):
+    #    y.append(result[k])
+    
+    #fig, ax = plt.subplots()
+    #ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
 
-    fig, ax = plt.subplots()
-    ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
 
-
-    print(result)
-    plt.show()
+    #print(result)
+    #plt.show()
 
 
    
