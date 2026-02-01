@@ -158,7 +158,11 @@ if __name__ == "__main__":
          #   result[n] = 1
          
     #försökte testa om funktionen fungerade men fick inte riktigt till det
-    print(get_prob_scen(1, [8,8,5], [5,5,5]))
+    assert get_prob_scen(1, [8,8,5], [5,5,5]) == 7
+    assert get_prob_scen(4, [2,2,9], [9,2,5]) == 9
+    assert get_prob_scen(8, [5,5,5], [5,5,2]) == 10
+    assert get_prob_scen(5, [5,2,5], [5,5,8]) == 8
+
             
 # Börjat labba med att visa resultatet i en graf
     #x = list(sorted(result.keys()))
