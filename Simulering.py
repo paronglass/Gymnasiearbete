@@ -1,19 +1,20 @@
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from statistics import mean
 
-base_prob_scen = {1:5, 2:3, 3:6, 4:7, 5:4, 6:8, 7:9, 8:10}
+base_prob_scen = {0:5, 1:3, 2:6, 3:7, 4:4, 5:8, 6:9, 7:10}
 #fundera på om aggresivitet ska ha -1 för låg för att göra det lättare senare när du testar om förarens värde är stort eller litet
 # listan för högre chans skrivs såhär (högt/lågt, vilken egenskap som gäller, vilken förare som gäller)
 higher_prob = {
-1:[[1, 1, 1], [1, 2, 1]],
-2:[[1, 1, 1], [1, 2, 1], [1, 2, 2]],
-3:[[1, 1, 1], [-1, 2, 1], [1, 2, 2]],
-4:[[-1, 1, 1], [-1, 2, 1]],
+0:[[1, 1, 1], [1, 2, 1]],
+1:[[1, 1, 1], [1, 2, 1], [1, 2, 2]],
+2:[[1, 1, 1], [-1, 2, 1], [1, 2, 2]],
+3:[[-1, 1, 1], [-1, 2, 1]],
+4:[[-1, 1, 1], [-1, 2, 1], [1, 2, 2]],
 5:[[-1, 1, 1], [-1, 2, 1], [1, 2, 2]],
-6:[[-1, 1, 1], [-1, 2, 1], [1, 2, 2]],
-7:[[-1, 1, 1], [-1, 2, 1], [1, 1, 2], [1, 0, 2]],
-8:[[-1, 1, 1], [-1, 2, 1], [-1, 1, 2], [-1, 0, 2]]             
+6:[[-1, 1, 1], [-1, 2, 1], [1, 1, 2], [1, 0, 2]],
+7:[[-1, 1, 1], [-1, 2, 1], [-1, 1, 2], [-1, 0, 2]]             
                }
 
 
@@ -144,7 +145,18 @@ def yttre_faktorer(alkohol, stress, trötthet, erfarenhet):
     id[2] = aggresivitet
 
     return id  
-    
+
+def simulation(yf_driver1, yf_driver2, runs = 10): 
+    result = []
+    driver1 = yttre_faktorer(*yf_driver1)
+    driver2 = yttre_faktorer(*yf_driver2)
+
+    for _ in range(runs):
+        scenario = get_scenario(driver1, driver2)
+
+        result.append(get_time(scenario))
+
+    return mean(result)
 
 if __name__ == "__main__":
 
@@ -158,10 +170,12 @@ if __name__ == "__main__":
          #   result[n] = 1
          
     #försökte testa om funktionen fungerade men fick inte riktigt till det
-    assert get_prob_scen(1, [8,8,5], [5,5,5]) == 7
-    assert get_prob_scen(4, [2,2,9], [9,2,5]) == 9
-    assert get_prob_scen(8, [5,5,5], [5,5,2]) == 10
-    assert get_prob_scen(5, [5,2,5], [5,5,8]) == 8
+    assert get_prob_scen(0, [8,8,5], [5,5,5]) == 7
+    assert get_prob_scen(3, [2,2,9], [9,2,5]) == 9
+    assert get_prob_scen(7, [5,5,5], [5,5,2]) == 10
+    assert get_prob_scen(4, [5,2,5], [5,5,8]) == 8
+
+    print(simulation([False,2,2,9], [True,3,9,7]))
 
             
 # Börjat labba med att visa resultatet i en graf
